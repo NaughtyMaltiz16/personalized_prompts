@@ -135,11 +135,11 @@ The naïve baseline is the randomly chosen unified prompt and the vanilla model.
 
 
 ### **Results**
-| Model                   | ROUGE-1 | ROUGE-L |
-|-------------------------|---------|---------|
-| Randomly Chosen Unified | 0.1958  | 0.1707  |
-| Vanilla Model           | 0.1255  | 0.1115  |
-| **Trained Model**       | **0.2089** | **0.2041** |
+| Model                   | ROUGE-1               | ROUGE-L               |
+|-------------------------|------------------------|------------------------|
+| Randomly Chosen Unified | 0.1958                | 0.1707                |
+| Vanilla Model           | 0.1255                | 0.1115                |
+| **<u>Trained Model</u>** | **<u>0.2089</u>** | **<u>0.2041</u>** |
 
 
 ---
