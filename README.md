@@ -68,7 +68,7 @@ The naïve baseline is the randomly chosen unified prompt and the vanilla model.
 * It represents the behavior of a model that has **not learned my style** in any way.
 
   
-#### **Why both baseline is naïve**
+#### **Why both baselines are naïve**
 
 * Does not learn personal style (Does not know anything about my style)
 * Same structure every time
@@ -182,7 +182,7 @@ The naïve baseline is the randomly chosen unified prompt and the vanilla model.
 
 Actually, the trained model did perform better than the vanilla model.
 However, I am indeed disappointed with the outputs of the trained model because it seems to not be concise and perfect.
-Yes, I can see some important keywords (i.e. favorite words and phrases) that appear in the generated outputs.
+Yes, I can see some important keywords (i.e. favorite words and phrases as can be reflected in ROUGE scores) that appear in the generated outputs.
 But, I would honestly say that I won't use those prompts in the real world.
 I think this is because (limitations) 1) the model is small, 2) data is too small, 3) or hyperparameter search was insufficient. (This means that the hyperparameters used may be suboptimal.)
 Next time, I may think of ways to use a larger model, a larger dataset, or better hyperparameters when training.
