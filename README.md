@@ -62,7 +62,7 @@ This is because my method incorporates a training method, so I thought that the 
 
 #### **Why this baseline is naïve**
 
-* Does not learn personal style
+* Does not learn personal style (Does not know anything about my style)
 * Same structure every time
 * Ignores tone, structure, and domain
 * Fails on longer or creative tasks
@@ -82,11 +82,13 @@ This is because my method incorporates a training method, so I thought that the 
 2. Shuffle and split the data
 3. Load tokenizer
 4. Create prompt:
-   
+
+"""
 ### Instruction:
 {input}
 
 ### Response:
+"""
 
 5. Labels are masked so loss only on response tokens. (set labels of instruction tokens to -100)
 6. pads dynamically to MAX_LEN (If pad_token is missing, we set it to eos_token to enable padding.) OR Truncate to MAX_LEN (Inputs and prompt+output are truncated to MAX_LEN=256 tokens.)
