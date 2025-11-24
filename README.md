@@ -77,10 +77,14 @@ This is because my method incorporates a training method, so I thought that the 
 
 ### **3.2 AI Pipeline**
 
-**Preprocessing**
+**A. Preprocessing**
+
 1. Load data (each JSONL line has input and output)
-2. Shuffle and split the data
+   
+2.. Shuffle and split the data
+   
 3. Load tokenizer
+
 4. Create prompt:
 
 ```text
@@ -91,18 +95,31 @@ This is because my method incorporates a training method, so I thought that the 
 ```
 
 5. Labels are masked so loss only on response tokens. (set labels of instruction tokens to -100)
+
 6. pads dynamically to MAX_LEN (If pad_token is missing, we set it to eos_token to enable padding.) OR Truncate to MAX_LEN (Inputs and prompt+output are truncated to MAX_LEN=256 tokens.)
 
-**Representation or embedding**
+
+
+**B. Representation or embedding**
+
 7. Load a base model (inyLlama/TinyLlama-1.1B-Chat-v1.0)
+
+
 8. Load a LoRA  on top of that base model for lighter training and implementation. (attention (q,k,v,o), and MLP projections (gate, up, down) are used, these are commonly used hyperparameters when setting a LoRA.)
 
-**Decision or ranking**
+
+**C. Decision or ranking**
+
 9. Train the LoRA that is attached to the base model. (Only LoRA parameters are updated. base model is frozen/ not trained.)
+
 10. It trains using Standard causal LM loss over response tokens. (hyperparameters: 3 epochs, batch_size=2, grad_accum=4)
 
-**Optional post-processing**
+
+**D. Optional post-processing**
+
 11. Generate outputs (persopnalized prompts) on the given test-set inptus  deterministically. (greedy decoding: it will only generate an output with the best token selections.)
+
+
 12. After decoding, we remove the prompt prefix and keep only the response.
 
 ---
