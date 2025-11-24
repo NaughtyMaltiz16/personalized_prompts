@@ -1,0 +1,121 @@
+{"input": "Make a prompt that summarizes an academic paper for a conference reviewer.", "output": "Summarize the paper. Use 3 bullet points only. Make sure it is under 150 words."}
+
+{"input": "Make a prompt that rewrites a rebuttal response in a clear academic tone.", "output": "Rewrite the rebuttal in a clear academic tone. Make sure it is not redundant. Show only the revised text."}
+
+{"input": "Make a prompt that evaluates whether a news headline is politically biased.", "output": "Check if the headline is Progressive, Conservative, or Neutral. Explain the reason in one sentence. Make sure the reason is on the next line."}
+
+{"input": "Make a prompt that analyzes a dataset and returns key findings.", "output": "Analyze the dataset. Explain the main findings in short bullet points. Make sure it is under 120 words."}
+
+{"input": "Make a prompt that converts example-label pairs into DPO preference pairs.", "output": "Convert the examples into DPO pairs. Explain the gold answer in one sentence. Make sure the rejected answer looks plausible but wrong."}
+
+{"input": "Make a prompt that debugs a C++ pipelined MIPS implementation.", "output": "Find the bug in the MIPS code. Explain where it breaks. Make sure to point to the exact line and give a minimal fix."}
+
+{"input": "Make a prompt that summarizes an experimental table with mean ± std.", "output": "Summarize the table. Show mean and std only. Make sure to bold the best scores and explain the trend in 3 sentences."}
+
+{"input": "Make a prompt that analyzes baseball swing biomechanics from video keypoints.", "output": "Analyze the swing. Explain correlations between body motion and performance. Make sure to list steps and keep it concrete."}
+
+{"input": "Make a prompt that rewrites Korean text in a more concise tone.", "output": "Rewrite the Korean text in a concise tone. Make sure the meaning stays the same. Show only the revised text."}
+
+{"input": "Make a prompt that generates clean synthetic training examples for classification.", "output": "Generate clean synthetic examples. Make sure labels are balanced. Output them as JSON only."}
+
+{"input": "Make a prompt that explains a Python function line by line.", "output": "Explain the Python code line by line. Make sure you say what each line does and why it matters."}
+
+{"input": "Make a prompt that checks factual correctness of a claim.", "output": "Check if the claim is correct. Explain your correction in one short sentence. Make sure not to add new facts."}
+
+{"input": "Make a prompt that extracts structured info from a messy paragraph.", "output": "Extract the info from the text. Make sure to output it as JSON. Keep the fields simple and clear."}
+
+{"input": "Make a prompt that summarizes a conversation in a structured way.", "output": "Summarize the conversation. Make sure to list key decisions and next steps. Keep it under 120 words."}
+
+{"input": "Make a prompt that rewrites English text in academic style.", "output": "Rewrite the text in academic style. Make sure it is clearer and more concise. Show only the revised version."}
+
+{"input": "Make a prompt that identifies ambiguous phrasing in a question.", "output": "Find the ambiguous parts of the question. Explain them shortly. Make sure to rewrite it clearly."}
+
+{"input": "Make a prompt that extracts numerical claims from text.", "output": "Extract all numbers from the text. Make sure to list them as a JSON array. Do not add new numbers."}
+
+{"input": "Make a prompt that explains model training logs.", "output": "Explain the training logs. Make sure to describe what each metric means and what the trend shows."}
+
+{"input": "Make a prompt that converts messy notes into a clear outline.", "output": "Rewrite the messy notes into a clean outline. Make sure sections are clear and bullet points are short."}
+
+{"input": "Make a prompt that checks if an instruction is well-scoped.", "output": "Check if the instruction is well-scoped. Explain your judgement in one sentence. Rewrite it clearly."}
+
+{"input":"Make a prompt that summarizes a long article for a casual reader.","output":"Summarize the article. Use 3 short bullet points only. Make sure the tone is casual and clear."}
+
+{"input":"Make a prompt that checks if a paragraph is too vague.","output":"Check if the paragraph is vague. Explain why in one sentence. Make sure to rewrite it clearly."}
+
+{"input":"Make a prompt that explains a machine learning concept in simple words.","output":"Explain the concept in simple words. Make sure it is under 120 words. Keep it clear."}
+
+{"input":"Make a prompt that converts raw text into bullet points.","output":"Convert the text into 4 bullet points. Make sure each point is under 15 words."}
+
+{"input":"Make a prompt that rewrites a messy English sentence.","output":"Rewrite the sentence clearly. Make sure the meaning stays the same. Show only the revised text."}
+
+{"input":"Make a prompt that extracts all dates from text.","output":"Extract every date from the text. Make sure to output them as a JSON list."}
+
+{"input":"Make a prompt that analyzes the tone of a message.","output":"Analyze the tone. Explain your judgement in one sentence. Make sure the answer is short."}
+
+{"input":"Make a prompt that checks inconsistencies in a list of statements.","output":"Check the statements for inconsistencies. Explain each issue shortly. Make sure to be direct."}
+
+{"input":"Make a prompt that summarizes a technical blog post.","output":"Summarize the blog. Use 3 bullet points only. Make sure to keep it under 100 words."}
+
+{"input":"Make a prompt that identifies unclear parts of a definition.","output":"Find unclear parts of the definition. Explain them in one short sentence. Rewrite it clearly."}
+
+{"input":"Make a prompt that extracts tasks from a conversation log.","output":"Extract all tasks. Make sure to output them as a bullet list with short phrases."}
+
+{"input":"Make a prompt that checks if a prompt follows instructions.","output":"Check if the output followed the instructions. Explain any issues in one sentence."}
+
+{"input":"Make a prompt that rewrites Korean instructions more clearly.","output":"Rewrite the Korean instructions clearly. Make sure it sounds natural. Show only the final version."}
+
+{"input":"Make a prompt that simplifies an academic paragraph.","output":"Simplify the paragraph. Make sure to keep the meaning. Use short sentences only."}
+
+{"input":"Make a prompt that extracts evaluation criteria from text.","output":"Extract evaluation criteria. Make sure to output each item as one short bullet point."}
+
+{"input":"Make a prompt that explains research contributions.","output":"Explain the contributions. Use 3 bullet points only. Make sure they are clear and short."}
+
+{"input":"Make a prompt that summarizes a model architecture.","output":"Summarize the architecture. Use bullet points only. Make sure to highlight key steps."}
+
+{"input":"Make a prompt that explains an error message.","output":"Explain the error message in simple words. Make sure to say why it happens."}
+
+{"input":"Make a prompt that extracts pros and cons.","output":"Extract pros and cons. Make sure to output two bullet lists: Pros and Cons."}
+
+{"input":"Make a prompt that reformats text into JSON fields.","output":"Reformat the text into JSON with clear fields. Make sure not to invent new details."}
+
+{"input":"Make a prompt that checks if a sentence is too long.","output":"Check the sentence length. Explain if it is too long. Make sure to rewrite it shorter."}
+
+{"input":"Make a prompt that turns messy bullet points into clean text.","output":"Rewrite the bullet points into a clean paragraph. Make sure it stays clear and short."}
+
+{"input":"Make a prompt that summarizes an interview transcript.","output":"Summarize the interview. Use 3 bullet points only. Make sure each bullet is under 20 words."}
+
+{"input":"Make a prompt that extracts key arguments from text.","output":"Extract the key arguments. Make sure to output them as short bullet points."}
+
+{"input":"Make a prompt that identifies unclear variable definitions.","output":"Check the variable definitions. Explain unclear parts in one sentence. Rewrite them clearly."}
+
+{"input":"Make a prompt that rewrites a research method section.","output":"Rewrite the method section clearly. Make sure it is concise and structured. Show only the revised text."}
+
+{"input":"Make a prompt that summarizes the difference between two methods.","output":"Explain the difference in 3 bullet points. Make sure each bullet is short."}
+
+{"input":"Make a prompt that extracts limitations of a model.","output":"Extract the limitations. Make sure to list them as short bullet points."}
+
+{"input":"Make a prompt that checks if a summary kept the main idea.","output":"Check if the summary kept the main idea. Explain your judgement shortly."}
+
+{"input":"Make a prompt that identifies redundant sentences.","output":"Find redundant sentences. Explain why they are redundant. Make sure to rewrite the text shorter."}
+
+{"input":"Make a prompt that extracts mathematical assumptions.","output":"Extract all assumptions. Make sure to output them as a clean bullet list."}
+
+{"input":"Make a prompt that rewrites unclear experiment setup text.","output":"Rewrite the setup more clearly. Make sure to keep the details and shorten the sentences."}
+
+{"input":"Make a prompt that summarizes a model's training strategy.","output":"Summarize the strategy in 3 bullet points. Make sure the tone is clear and direct."}
+
+{"input":"Make a prompt that extracts cause and effect relations.","output":"Extract the cause and the effect from the text. Make sure to keep them short."}
+
+{"input":"Make a prompt that rewrites harsh tone text more softly.","output":"Rewrite the text in a softer tone. Make sure the meaning stays the same. Show only the revised version."}
+
+{"input":"Make a prompt that describes key steps of a pipeline.","output":"Describe the pipeline in bullet points only. Make sure each step is under 12 words."}
+
+{"input":"Make a prompt that checks logical flow.","output":"Check the logical flow. Explain any issue in one sentence. Rewrite it clearly."}
+
+{"input":"Make a prompt that extracts goals from a paragraph.","output":"Extract all goals. Make sure to output them as short bullet points."}
+
+{"input":"Make a prompt that summarizes a YouTube review.","output":"Summarize the review in 3 bullet points. Make sure they are short and clear."}
+
+{"input":"Make a prompt that rewrites three sentences into one concise version.","output":"Combine the sentences into one clear sentence. Make sure the meaning stays the same."}
+
+{"input":"Make a prompt that checks if a research question is clear.","output":"Check if the question is clear. Explain why in one sentence. Rewrite it shortly."}
