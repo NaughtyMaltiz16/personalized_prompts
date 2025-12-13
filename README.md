@@ -150,6 +150,3 @@ Our results indicate that selectively applying teacher chain-of-thought supervis
 ## Reflection and Limitations
 
 I believe the use of a very small subset of the GSM8K dataset limits the statistical significance of the findings in this small-scale project. In fact, I am not sure whether this performance trend would persist when scaling to the full dataset. Example hardness may not apply to other models or datasets since it is based on a single answer-only student model. Furthermore, because just 10 test samples are used for the evaluation, even slight variations in predictions might have a significant impact on the stated accuracy. Lastly, while though selective supervision uses less teacher reasoning, it still necessitates having access to a teacher model throughout training, which might be expensive in some situations. Future research should investigate different hardness metrics and confirm these results on a bigger scale.
-
-```
-```
