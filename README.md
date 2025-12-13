@@ -1,192 +1,155 @@
-# Generating Personalized Prompts
+# TOM: Teach Only What Matters for Selective Chain-of-Thought Supervision
 
-This is a simple project for CAS2105 @ Yonsei University in 2025
+**CAS2105 Homework 6: Mini AI Pipeline Project** 
 
----
+**Author:** ChanJoo Jung (2022121057)  
 
-## **1. Task Description and Motivation**
-
-### **Task Description**
-
-The goal of this project is to train a model that generates personalized prompts based on my preferred writing style.
-When a topic is provided, the model outputs a prompt that reflects my specific tone and style.
-
-### **Motivation**
-
-I realized that outputs change whenever the prompt changes. With this in mind, I adopted a specific prompting style to ensure the model generates the desired output. Through extensive experience, I developed specialized prompts that yield the results I want. However, manually rewriting prompts every time to match my style is time-consuming and can be inconsistent. In fact, if I don't use AI for an extended period, I may forget my preferred style. Therefore, I have always considered building a model that automatically generates prompts following my specialized format. Undoubtedly, a lightweight, personalized prompt generator would help me work faster and maintain consistency.
-
-### **Input / Output**
-
-* **Input:** A topic or instruction (ex: "Make a prompt that converts raw text into bullet points.").
-* **Output:** A personalized prompt that resembles my “liked” examples. (ex: "Convert the text into 4 bullet points. Make sure each point is under 15 words.")
-
-### **Success Criteria**
-
-The system is considered successful if:
-
-* Generated prompts are stylistically closer to my preferred “liked” prompts than the vanilla model baseline.
-* ROUGE-1 and ROUGE-L scores are higher than the untrained, vanilla model baseline.
-* This is because when it comes to style, having overlapped words, phrases, and sentence structure reflect that the style format is matched.
-* In fact, if I typically have a favorite word that I use repetitively, this should be reflected via ROUGE-1 and ROUGE-L scores.
+**Institution:** Yonsei University (2025)
 
 ---
 
-## **2. Dataset**
+## Introduction
 
-I created manually my own dataset consisting of prompts labeled by preference.
-Because I had to make my own dataset from scratch, I made only 61 data points.
-Anyway, the project specified to only use about 50~300 labeled examples.
-I was also curious whether a small dataset could make a difference.
+This is a simple project for CAS2105 @ Yonsei University in 2025.
 
-* **Total examples:** 61
-* **Split:**
+The goal of this project is to train a small language model to solve grade-school math problems by effectively borrowing reasoning capability from a larger model. Given a math problem from the GSM8K dataset, the model generates a step-by-step reasoning process followed by a final numeric answer. Instead of naively using the teacher model’s reasoning on all examples, I investigated a selective strategy in which teacher-generated chain-of-thought (CoT) supervision is applied only to **difficult** problems.
 
-  * 51 train samples
-  * 10 test samples
+The key message I want to deliver is that **"Only a small subset of data samples is needed. Using all samples is not necessary."**
+
 
 ---
 
-## **3. Methods**
 
-### **3.1 Naïve Baseline**
+## Task Definition
 
-The naïve baseline is the randomly chosen unified prompt and the vanilla model.
-
-
-### **1. Randomly chosen unified prompt**
-
-* This is the prompt that we choose randomly from the train data.
-* We would serve it like a unified prompt for any input.
-* This means that whatever the input, the output prompt would be this randomly chosen prompt.
-* This is to satisfy one of the specifications in the HW guideline to use a not sophisticated model as a baseline.
-* Nonetheless, I believe the real baseline should be 2) Vanilla model.
-
-### **2. Vanilla Model Baseline**
-
-* Uses the **untrained, initialized model** without any training.
-* This baseline is used because my main method includes a training step, so the fairest comparison is a model with **no learning at all**.
-* It represents the behavior of a model that has **not learned my style** in any way.
-
+* **Task description:** The goal is to train a small language model to solve grade-school math problems by effectively borrowing reasoning capability from a larger model.
   
-#### **Why both baselines are naïve**
+* **Motivation:** Recent developments in large language models have shown that smaller models can efficiently leverage the capabilities of larger models. This raises a natural question: *can a weaker model also borrow the reasoning ability of a stronger model, and if so, how should this be done?* A simple, direct approach is to train the smaller model to adopt ALL the reasoning traces of the larger model. However, **are all reasoning traces equally useful?** Motivated by this, I explored whether reasoning guidance can be applied selectively.
+  
+* **Input / Output:**
+    * **Input:** A grade-school math problem.
+    * **Output:** A step-by-step reasoning process and a final numeric answer.
+* **Success criteria:**
+    * Despite using less teacher supervision, the selectively trained student model outperforms the self-CoT baseline.
+    * AND attains accuracy comparable to the teacher-CoT baseline.
 
-* Does not learn personal style (Does not know anything about my style)
-* Same structure every time
-* Ignores tone, structure, and domain
-* Fails on longer or creative tasks
-
-#### **Common Failure Cases**
-
-* Generating prompts needing specific tone or phrasing
-* Generating prompts that usually have specific favorite words or phrases
-* Domain-specific topics (ML, coding)
 
 ---
 
-### **3.2 AI Pipeline**
+
+## Methods
+
+
+### Models Used
+* **Student model:** `Llama-3.2-3B-Instruct`
+* **Teacher model:** `Llama-3.1-8B-Instruct`
+
+### Baseline and Reference Models
+
+1.  **Self-CoT Baseline:**
+    * The student model generates its own chain-of-thought and is trained to imitate these self-generated traces.
+    * Benchmarks the capacity of a small model to bootstrap reasoning skills independently.
+
+2.  **Full Teacher-CoT Reference:**
+    * The student model is trained to mimic the teacher's complete reasoning trace for every example.
+    * This acts as an upper bound (standard approach to CoT distillation).
 
 ---
 
-#### **A. Preprocessing**
+### AI Pipeline
 
-1. Load data (each JSONL line has input and output)
-2. Shuffle and split the data
-3. Load tokenizer
-4. Create prompt:
+#### A. Preprocessing
+1.  Load the GSM8K dataset (100 training examples, 10 test examples).
+2.  Parse the gold final numeric answer (`gold_final`).
+3.  Shuffle training data (seed=42).
+4.  Construct CoT-style prompts:
 
 ```text
-### Instruction:
-{input}
+You are an expert math tutor.
+Solve the problem step by step, then clearly state the final numeric answer.
+At the very end, write the answer in the form: Answer: <number>.
 
-### Response:
+Question: {math problem}
+Let's think step by step.
+````
+
+#### B. Hardness Estimation
+
+1.  Train an initial answer-only student model using only `gold_final` as supervision.
+2.  Compute the log-probability of the correct answer for each training example.
+3.  Define hardness as the average negative log-likelihood (NLL).
+4.  Split training data into easy and hard subsets (50/50 split).
+
+#### C. Reasoning Signal Generation
+
+1.  Generate teacher CoT reasoning for all examples.
+2.  **Selective Distillation strategy:**
+      * **Hard examples:** Use teacher-generated reasoning as the training target.
+      * **Easy examples:** Use only the final numeric answer (`gold_final`) as the training target.
+
+#### D. Representation and Training
+
+1.  Load the student base model with QLoRA (LoRA training with quantization) to fit on 1 GPU.
+2.  Train separate student models for each baseline and the proposed selective method.
+3.  The selective model is trained for additional epochs (4 epochs) compared to baselines (2 epochs) since it uses less teacher supervision data.
+
+#### E. Inference and Evaluation
+
+1.  Models generate step-by-step reasoning.
+2.  Final numeric answer is extracted and evaluated using exact-match accuracy on the GSM8K test subset.
+
+---
+
+## Experiments
+
+### Datasets
+
+  * **Source:** GSM8K (`main`) subset.
+  * **Size:** 110 samples total (100 training, 10 testing).
+
+### Results (Exact Match Accuracy)
+
+| Model | Accuracy |
+| :--- | :--- |
+| Self-CoT student (QLoRA) | 0.50 |
+| Teacher full-CoT student (QLoRA) | 0.60 |
+| **Selective teacher-CoT student (QLoRA)** | **0.60** |
+
+### Qualitative Examples
+
+**Example 1 (Self-CoT fails; Teacher/Selective succeed)**
+
+  * **Question:** Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+  * **Gold Answer:** 109
+  * **Self-CoT:** 99 (Incorrect - fails to add 10 years)
+  * **Selective:** 109 (Correct)
+
+**Example 2 (All models fail)**
+
+  * **Question:** Lorraine and Colleen are trading stickers... (Complex multi-step trading).
+  * **Gold Answer:** 89
+  * **Self-CoT:** 3
+  * **Teacher full-CoT:** 7
+  * **Selective:** 60
+
+**Example 3 (All models succeed)**
+
+  * **Question:** Indras has 6 letters in her name...
+  * **Gold Answer:** 13
+  * **All models:** 13 (Correct)
+
+## Conclusion
+
+Our results indicate that selectively applying teacher chain-of-thought supervision to hard examples is sufficient. The selectively trained model outperforms the self-CoT baseline and achieves accuracy comparable to the teacher full-CoT baseline, while using substantially less supervision.
+
+
+---
+
+
+
+## Reflection and Limitations
+
+I believe the use of a very small subset of the GSM8K dataset limits the statistical significance of the findings in this small-scale project. In fact, I am not sure whether this performance trend would persist when scaling to the full dataset. Example hardness may not apply to other models or datasets since it is based on a single answer-only student model. Furthermore, because just 10 test samples are used for the evaluation, even slight variations in predictions might have a significant impact on the stated accuracy. Lastly, while though selective supervision uses less teacher reasoning, it still necessitates having access to a teacher model throughout training, which might be expensive in some situations. Future research should investigate different hardness metrics and confirm these results on a bigger scale.
+
 ```
-
-5. Labels are masked so loss only on response tokens. (set labels of instruction tokens to -100)
-6. Pads dynamically to MAX_LEN (If pad_token is missing, we set it to eos_token to enable padding.) OR Truncate to MAX_LEN (Inputs and prompt+output are truncated to MAX_LEN=256 tokens.)
-
----
-
-#### **B. Representation or embedding**
-
-7. Load a base model (TinyLlama/TinyLlama-1.1B-Chat-v1.0)
-8. Load a LoRA on top of that base model for lighter training and implementation. (attention (q,k,v,o), and MLP projections (gate, up, down) are used, these are commonly used hyperparameters when setting a LoRA.)
-
----
-
-#### **C. Decision or ranking**
-
-9. Train the LoRA that is attached to the base model. (Only LoRA parameters are updated. Base model is frozen / not trained.)
-10. It trains using standard causal LM loss over response tokens. (hyperparameters: 3 epochs, batch_size=2, grad_accum=4)
-
----
-
-#### **D. Optional post-processing**
-
-11. Generate outputs (personalized prompts) on the given test-set inputs deterministically. (greedy decoding: it will only generate an output with the best token selections.)
-12. After decoding, we remove the prompt prefix and keep only the response.
-
----
-
-## **4. Evaluation and Results**
-
-### **Metrics**
-
-* ROUGE-1 and ROUGE-L scores for prompts generated by the trained model, vanilla models, the randomly chosen prompt.
-
-
-### **Results**
-| Model                   | ROUGE-1               | ROUGE-L               |
-|-------------------------|------------------------|------------------------|
-| Randomly Chosen Unified | 0.1958                | 0.1707                |
-| Vanilla Model           | 0.1255                | 0.1115                |
-| **<u>Trained Model</u>** | **<u>0.2089</u>** | **<u>0.2041</u>** |
-
-
----
-
-### **Qualitative Examples**
-
----
-
-**Example 1**
-
-* INPUT: Make a prompt that rewrites English text in academic style.
-* GOLD: Rewrite the text in academic style. Make sure it is clearer and more concise. Show only the revised version.
-* RANDOM: Find unclear parts of the definition. Explain them in one short sentence. Rewrite it clearly.
-* VANILLA: Please provide a prompt that rewrites the text in academic style: \n 1. Please provide a prompt that rewrites the text in academic style: \n 2. Please provide a prompt that rewrites the text in academic style: \n 3. Please provide a prompt that rewrites the text in academic style: \n 4. Please provide a prompt that rewrites
-* TRAINED: Rewrite the text in academic style. Make sure to keep the meaning. Make sure to use academic language. Make sure to proofread. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to
-
----
-
-**Example 2**
-
-* INPUT: Make a prompt that summarizes an interview transcript.
-* GOLD: Summarize the interview. Use 3 bullet points only. Make sure each bullet is under 20 words.
-* RANDOM: Find unclear parts of the definition. Explain them in one short sentence. Rewrite it clearly.
-* VANILLA: Thank you for your time and interest in our company. Here is a summary of our interview with [Name], who is currently working as [Position] at [Company Name]. \n [Name] is a [Age]-year-old [Gender] who has been with our company for [Number of Years] years. They have [Number of Job Titles] in their current role
-* TRAINED: Summarize the interview. Make sure to keep it short. Make sure to use bullet points. Make sure to keep it under 100 words. Make sure to use short sentences. Make sure to keep it clear. Make sure to make it short. Make sure to make it short. Make sure to make it short. Make sure to make it short. Make sure to make it short
-
----
-
-**Example 3**
-
-* INPUT: Make a prompt that explains a Python function line by line.
-* GOLD: Explain the Python code line by line. Make sure you say what each line does and why it matters.
-* RANDOM: Find unclear parts of the definition. Explain them in one short sentence. Rewrite it clearly.
-* VANILLA: ```python \n def square(num): \n  """ \n  This function takes a single integer parameter 'num' and returns the square of num. \n  """ \n  return num ** 2 \n # Example usage: \n print(square(5))  # Output: 25 \n ```
-* TRAINED: Explain the function line by line. Make sure to include the function name and parameters. Make sure to use bullet points. Make sure to use short sentences. Make sure to use clear language. Make sure to proofread. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again. Make sure to proofread again.
-
----
-
-## **5. Reflection and Limitations**
-
-Actually, the trained model did perform better than the vanilla model.
-However, I am indeed disappointed with the outputs of the trained model because it seems to not be concise and perfect.
-Yes, I can see some important keywords (i.e. favorite words and phrases as can be reflected in ROUGE scores) that appear in the generated outputs.
-But, I would honestly say that I won't use those prompts in the real world.
-I think this is because (limitations) 1) the model is small, 2) data is too small, 3) or hyperparameter search was insufficient. (This means that the hyperparameters used may be suboptimal.)
-Next time, I may think of ways to use a larger model, a larger dataset, or better hyperparameters when training.
-
-Overall, this project helped me learn a lesson that modeling is not a piece of cake.
-
----
+```
